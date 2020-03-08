@@ -16,8 +16,8 @@ public class StudentDaoTest {
 	@Test
 	public void save() {
 		Student stu = new Student();
-		stu.setName("Anne");
-		stu.setAge(16);
+		stu.setName("Tom");
+		stu.setAge(15);
 		
 		IStudentDao dao = new StudentDaoImpl();
 		dao.save(stu);
@@ -26,7 +26,7 @@ public class StudentDaoTest {
 	@Test
 	public void update() {
 		Student stu = new Student();
-		stu.setName("Mary");
+		stu.setName("Mary2");
 		stu.setAge(20);
 		
 		IStudentDao dao = new StudentDaoImpl();
@@ -36,7 +36,7 @@ public class StudentDaoTest {
 	@Test
 	public void delete() {
 		IStudentDao dao = new StudentDaoImpl();
-		dao.delete(3);
+		dao.delete(4);
 	}
 	
 	@Test

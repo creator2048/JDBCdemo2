@@ -2,6 +2,7 @@ package com.jdbc.dao.impl;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -17,18 +18,20 @@ public class StudentDaoImpl implements IStudentDao {
 	@Override
 	public void save(Student stu) {
 		Connection conn = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 
 		try {
 			conn = JDBCUtil.getConn();
-			st = conn.createStatement();
-			String sql = "insert into student(name,age) values('" + stu.getName() + "'," + stu.getAge() + ")";
+			String sql = "insert into student(name,age) values(?,?)";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, stu.getName());
+			ps.setInt(2, stu.getAge());
 			System.out.println(sql);
-			st.executeUpdate(sql);
+			ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			JDBCUtil.close(conn, st, null);
+			JDBCUtil.close(conn, ps, null);
 		}
 	}
 
@@ -36,19 +39,21 @@ public class StudentDaoImpl implements IStudentDao {
 	public void updata(int id, Student stu) {
 
 		Connection conn = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 
 		try {
 			conn = JDBCUtil.getConn();
-			st = conn.createStatement();
-			String sql = "update student set name = '" + stu.getName() + "',age = " + stu.getAge() + " where id=" + id
-					+ "";
+			String sql = "update student set name = ?,age = ? where id=?";
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, stu.getName());
+			ps.setInt(2, stu.getAge());
+			ps.setInt(3, id);
 			System.out.println(sql);
-			st.executeUpdate(sql);
+			ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			JDBCUtil.close(conn, st, null);
+			JDBCUtil.close(conn, ps, null);
 		}
 
 	}
@@ -57,18 +62,19 @@ public class StudentDaoImpl implements IStudentDao {
 	public void delete(int id) {
 
 		Connection conn = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 
 		try {
 			conn = JDBCUtil.getConn();
-			st = conn.createStatement();
-			String sql = "delete from student where id = " + id + "";
+			String sql = "delete from student where id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1,id);
 			System.out.println(sql);
-			st.executeUpdate(sql);
+			ps.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			JDBCUtil.close(conn, st, null);
+			JDBCUtil.close(conn, ps, null);
 		}
 
 	}
@@ -77,15 +83,15 @@ public class StudentDaoImpl implements IStudentDao {
 	public Student get(int id) {
 
 		Connection conn = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet res = null;
 
 		try {
 			conn = JDBCUtil.getConn();
-			st = conn.createStatement();
-			String sql = "select * from student where id = " + id + "";
-			System.out.println(sql);
-			res = st.executeQuery(sql);
+			String sql = "select * from student where id = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, id);
+			res = ps.executeQuery();
 			if (res.next()) {
 				Student stu = new Student();
 				stu.setName(res.getString("name"));
@@ -96,7 +102,7 @@ public class StudentDaoImpl implements IStudentDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-				JDBCUtil.close(conn, st, res);
+				JDBCUtil.close(conn, ps, res);
 		}
 		return null;
 	}
@@ -105,15 +111,15 @@ public class StudentDaoImpl implements IStudentDao {
 	public List<Student> getAll() {
 
 		Connection conn = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet res = null;
 
 		try {
 			conn = JDBCUtil.getConn();
-			st = conn.createStatement();
 			String sql = "select * from student";
+			ps = conn.prepareStatement(sql);
 			System.out.println(sql);
-			res = st.executeQuery(sql);
+			res = ps.executeQuery();
 			List<Student> list = new ArrayList<Student>();
 			while (res.next()) {
 				Student stu = new Student();
@@ -127,7 +133,7 @@ public class StudentDaoImpl implements IStudentDao {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			JDBCUtil.close(conn, st, res);
+			JDBCUtil.close(conn, ps, res);
 		}
 		return null;
 	}
