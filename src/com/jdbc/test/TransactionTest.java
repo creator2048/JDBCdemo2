@@ -22,22 +22,30 @@ public class TransactionTest {
 		if (!res.next()) {
 			throw new RuntimeException("没钱了");
 		}
-		//开启事务
-		conn.setAutoCommit(false);
-		//减少用户1	1000
-		sql = "update account set money = money - ? where name = ?";
-		ps = conn.prepareStatement(sql);
-		ps.setDouble(1, 1000);
-		ps.setString(2,"Jack");
-		ps.executeUpdate();
-		//增加用户2	1000
-		sql = "update account set money = money + ? where name = ?";
-		ps = conn.prepareStatement(sql);
-		ps.setDouble(1, 1000);
-		ps.setString(2,"Anne");
-		ps.executeUpdate();
-		conn.commit();
-		JDBCUtil.close(conn, ps, res);
+		try {
+			//开启事务
+			conn.setAutoCommit(false);
+			//减少用户1	1000
+			sql = "update account set money = money - ? where name = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setDouble(1, 1000);
+			ps.setString(2,"Jack");
+			ps.executeUpdate();
+			//增加用户2	1000
+			sql = "update account set money = money + ? where name = ?";
+			ps = conn.prepareStatement(sql);
+			ps.setDouble(1, 1000);
+			ps.setString(2,"Anne");
+			ps.executeUpdate();
+			conn.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+		}finally {
+			JDBCUtil.close(conn, ps, res);
+		}
+		
+		
 		
 	}
 }
