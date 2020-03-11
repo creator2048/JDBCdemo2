@@ -12,13 +12,12 @@ public class GenerateTest {
 	public static void main(String[] args) throws Exception {
 	
 		Connection conn = JDBCUtil.getConn();
-		String sql = "insert into student(name,age) values(?,?) ";		
-		PreparedStatement ps = conn.prepareStatement(sql);
+		String sql = "insert into student(name,age) values(?,?) ";	
+		//设置可以获取主键	
+		PreparedStatement ps = conn.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 		ps.setString(1, "李四");
 		ps.setInt(2, 23);
-		
-		//设置可以获取主键
-		ps.executeUpdate(sql,Statement.RETURN_GENERATED_KEYS);
+		ps.executeUpdate();
 		//获取自动生成的id
 		ResultSet res = ps.getGeneratedKeys();
 		if (res.next()) {

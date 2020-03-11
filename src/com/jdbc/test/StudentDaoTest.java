@@ -42,7 +42,7 @@ public class StudentDaoTest {
 	@Test
 	public void get() {
 		IStudentDao dao = new StudentDaoImpl();
-		Student stu = dao.get(2);
+		Student stu = dao.get(3);
 		System.out.println(stu);
 	}
 	
